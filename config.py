@@ -21,3 +21,16 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    if os.getenv("DB_SSL", "false").lower() == "true":
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            "connect_args": {
+                "ssl_ca": os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "certs",
+                    "ca.pem"
+                ),
+                "ssl_verify_cert": True,
+                "ssl_verify_identity": True,
+            }
+        }
