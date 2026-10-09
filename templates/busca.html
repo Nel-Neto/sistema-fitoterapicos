@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Busca | Fitoterápicos{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <h1 class="h2">Resultados da busca</h1>
+    {% if termo %}
+        <p class="text-secondary">Pesquisa por: <strong>{{ termo }}</strong></p>
+    {% else %}
+        <p class="text-secondary">Digite um nome científico, nome popular, família ou indicação.</p>
+    {% endif %}
+
+    <div class="row g-3 mt-2">
+        {% for planta in plantas %}
+        <div class="col-md-6 col-lg-4">
+            <a class="card plant-card h-100 text-decoration-none" href="{{ url_for('plantas.detalhes_planta', planta_id=planta.id) }}">
+                <div class="card-body">
+                    <h2 class="h5 text-dark">{{ planta.nome_popular }}</h2>
+                    <p class="fst-italic text-success mb-2">{{ planta.nome_cientifico }}</p>
+                    <p class="text-secondary mb-0">{{ planta.descricao or '' }}</p>
+                </div>
+            </a>
+        </div>
+        {% else %}
+            {% if termo %}
+            <div class="col-12">
+                <div class="alert alert-light border">Nenhum resultado encontrado para “{{ termo }}”.</div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

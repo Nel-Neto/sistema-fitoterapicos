@@ -1,0 +1,110 @@
+:root {
+    --surface: #f7f9f7;
+    --border: #dfe7df;
+}
+
+body {
+    background: var(--surface);
+    color: #243024;
+}
+
+.hero {
+    background: linear-gradient(180deg, #eef7ef 0%, #f7f9f7 100%);
+}
+
+.summary-card,
+.detail-header {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+}
+
+.plant-card {
+    border: 1px solid var(--border);
+    border-radius: .9rem;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.plant-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1.2rem rgba(0, 0, 0, .08);
+}
+
+.accordion-item {
+    border-color: var(--border);
+}
+
+.formula-box {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: .75rem;
+    background: #fafcfa;
+}
+
+.posology-box {
+    padding: .85rem;
+    border-left: 4px solid #198754;
+    background: #fff;
+}
+
+footer {
+    min-height: 100px;
+}
+
+/* Página inicial */
+
+.hero {
+    background:
+        linear-gradient(
+            135deg,
+            #eef7ef 0%,
+            #f8fbf8 55%,
+            #ffffff 100%
+        );
+    border-bottom: 1px solid #e1e9e1;
+}
+
+.hero h1 {
+    letter-spacing: -1.5px;
+}
+
+.summary-card {
+    background: #ffffff;
+    border: 1px solid #dfe7df;
+    border-radius: 20px;
+}
+
+.plant-card {
+    background: #ffffff;
+    border: 1px solid #dfe7df;
+    border-radius: 16px;
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.plant-card:hover {
+    transform: translateY(-5px);
+    border-color: #a9c9af;
+
+    box-shadow:
+        0 12px 30px
+        rgba(30, 80, 45, 0.10);
+}
+
+.information-box {
+    background: #eef7ef;
+    border: 1px solid #d4e6d6;
+    border-radius: 16px;
+}
+
+.form-control:focus {
+    border-color: #198754;
+
+    box-shadow:
+        0 0 0 0.2rem
+        rgba(25, 135, 84, 0.15);
+}

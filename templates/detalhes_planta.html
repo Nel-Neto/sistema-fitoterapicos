@@ -1,0 +1,1030 @@
+{% extends "base.html" %}
+
+{% block title %}{{ planta.nome_popular }} | Fitoterápicos{% endblock %}
+
+{% macro lista_textos(itens, atributo) %}
+<ul class="detail-list mb-0">
+    {% for item in itens %}
+        <li>{{ item|attr(atributo) }}</li>
+    {% endfor %}
+</ul>
+{% endmacro %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Navegação -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('plantas.index') }}">
+                    Início
+                </a>
+            </li>
+
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('plantas.listar_plantas') }}">
+                    Fitoterápicos
+                </a>
+            </li>
+
+            <li class="breadcrumb-item active">
+                {{ planta.nome_popular }}
+            </li>
+        </ol>
+    </nav>
+
+
+    <!-- Identificação -->
+    <section class="plant-detail-header p-4 p-lg-5 mb-4">
+
+        <div class="row align-items-center g-4">
+
+            <div class="col-lg-8">
+
+                <span class="badge rounded-pill text-bg-success mb-3">
+                    FITOTERÁPICO
+                </span>
+
+                <h1 class="display-5 fw-bold mb-2">
+                    {{ planta.nome_popular }}
+                </h1>
+
+                <p class="h4 fst-italic text-success mb-4">
+                    {{ planta.nome_cientifico }}
+                </p>
+
+                {% if planta.descricao %}
+                    <p class="lead text-secondary mb-0">
+                        {{ planta.descricao }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="identification-box">
+
+                    <div class="identification-item">
+
+                        <span class="detail-label">
+                            Família botânica
+                        </span>
+
+                        <strong>
+                            {{ planta.familia_botanica or
+                               'Não informada' }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="identification-item">
+
+                        <span class="detail-label">
+                            Parte utilizada
+                        </span>
+
+                        <strong>
+                            {{ planta.parte_utilizada or
+                               'Não informada na fonte' }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+<!-- Destaque principal: interações medicamentosas -->
+<section class="mb-5" id="interacoes-principais">
+
+    <div class="card border-success shadow-sm">
+        <div class="card-header bg-success text-white p-3">
+            <h2 class="h4 mb-0">
+                Interações medicamentosas
+            </h2>
+        </div>
+
+        <div class="card-body p-4">
+
+            <p class="text-secondary">
+                Consulte as possíveis interações medicamentosas
+                cadastradas para esta planta medicinal.
+            </p>
+
+            {% if planta.interacoes %}
+
+                {% for item in planta.interacoes %}
+
+                <div class="border rounded-3 p-3 mb-3">
+
+                    <div class="fw-semibold text-success mb-2">
+                        Medicamento:
+                        {{ item.medicamento or "Não especificado" }}
+                    </div>
+
+                    <p class="mb-0">
+                        {{ item.interacao }}
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="alert alert-warning mb-0">
+                    Não há interações medicamentosas cadastradas
+                    para esta planta. Isso não significa ausência
+                    de riscos ou interações.
+                </div>
+
+            {% endif %}
+
+            <a
+                href="{{ url_for('plantas.buscar_interacoes') }}"
+                class="btn btn-outline-success mt-3"
+            >
+                Pesquisar outras interações
+            </a>
+
+        </div>
+    </div>
+
+</section>
+
+
+    <!-- Informações principais -->
+    <div class="row g-4">
+
+        <!-- Indicações -->
+        {% if planta.indicacoes %}
+
+        <div class="col-lg-6">
+
+            <section class="detail-card detail-card-success h-100">
+
+                <div class="detail-card-header">
+                    <span class="section-number">01</span>
+
+                    <div>
+                        <div class="detail-eyebrow">
+                            USO TERAPÊUTICO
+                        </div>
+
+                        <h2>
+                            Indicações
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="detail-card-body">
+                    {{ lista_textos(
+                        planta.indicacoes,
+                        'indicacao'
+                    ) }}
+                </div>
+
+            </section>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Contraindicações -->
+        {% if planta.contraindicacoes %}
+
+        <div class="col-lg-6">
+
+            <section class="detail-card detail-card-warning h-100">
+
+                <div class="detail-card-header">
+
+                    <span class="section-number">02</span>
+
+                    <div>
+                        <div class="detail-eyebrow">
+                            SEGURANÇA
+                        </div>
+
+                        <h2>
+                            Contraindicações
+                        </h2>
+                    </div>
+
+                </div>
+
+                <div class="detail-card-body">
+
+                    {{ lista_textos(
+                        planta.contraindicacoes,
+                        'contraindicacao'
+                    ) }}
+
+                </div>
+
+            </section>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Informações detalhadas -->
+    <section class="mt-5">
+
+        <div class="mb-4">
+
+            <span class="text-success fw-semibold">
+                INFORMAÇÕES TÉCNICAS
+            </span>
+
+            <h2 class="display-6 fw-bold">
+                Detalhes de utilização
+            </h2>
+
+        </div>
+
+
+        <div class="accordion detail-accordion" id="dadosPlanta">
+
+
+            <!-- Precauções -->
+
+            {% if planta.precaucoes %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#precaucoes"
+                    >
+                        Precauções e advertências
+                    </button>
+
+                </h2>
+
+                <div
+                    id="precaucoes"
+                    class="accordion-collapse collapse show"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        {{ lista_textos(
+                            planta.precaucoes,
+                            'precaucao'
+                        ) }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+<!-- Efeitos adversos -->
+
+{% if planta.efeitos_adversos %}
+
+<div class="accordion-item">
+
+    <h2 class="accordion-header">
+        <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#efeitosAdversos"
+            aria-expanded="false"
+            aria-controls="efeitosAdversos"
+        >
+            Efeitos adversos
+        </button>
+    </h2>
+
+    <div
+        id="efeitosAdversos"
+        class="accordion-collapse collapse"
+        data-bs-parent="#dadosPlanta"
+    >
+
+        <div class="accordion-body">
+
+            <ul class="detail-list mb-0">
+
+                {% for item in planta.efeitos_adversos %}
+
+                <li>
+                    {{ item.efeito_adverso }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+            <!-- Formas farmacêuticas -->
+
+            {% if planta.formas %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#formas"
+                    >
+                        Formas farmacêuticas
+                    </button>
+
+                </h2>
+
+                <div
+                    id="formas"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        <div class="row g-3">
+
+                            {% for item in planta.formas %}
+
+                            <div class="col-md-6">
+
+                                <div class="pharma-form-box h-100">
+
+                                    <strong>
+                                        {{ item.forma }}
+                                    </strong>
+
+                                    {% if item.descricao %}
+
+                                    <p class="mb-0 mt-1">
+                                        {{ item.descricao }}
+                                    </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Fórmulas e posologias -->
+
+            {% if planta.formulas %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#formulas"
+                    >
+                        Preparo, administração e posologia
+                    </button>
+
+                </h2>
+
+                <div
+                    id="formulas"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        {% for formula in planta.formulas %}
+
+                        <article class="formula-card">
+
+                            <div class="formula-title">
+
+                                <span class="formula-number">
+                                    {{ formula.numero_formula }}
+                                </span>
+
+                                <div>
+
+                                    <span class="detail-label">
+                                        FÓRMULA
+                                    </span>
+
+                                    <h3 class="h5 mb-0">
+
+                                        {% if formula.nome %}
+                                            {{ formula.nome }}
+                                        {% else %}
+                                            Fórmula
+                                            {{ formula.numero_formula }}
+                                        {% endif %}
+
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+
+                            {% if formula.descricao %}
+
+                            <p class="text-secondary mt-3">
+                                {{ formula.descricao }}
+                            </p>
+
+                            {% endif %}
+
+
+                            {% for preparo in formula.preparos %}
+
+                            <div class="formula-section">
+
+                                <h4>
+                                    Orientações para o preparo
+                                </h4>
+
+                                <dl class="row mb-0">
+
+                                    {% if preparo.metodo %}
+
+                                    <dt class="col-sm-4">
+                                        Método
+                                    </dt>
+
+                                    <dd class="col-sm-8">
+                                        {{ preparo.metodo }}
+                                    </dd>
+
+                                    {% endif %}
+
+
+                                    {% if preparo.tempo_preparo_minutos %}
+
+                                    <dt class="col-sm-4">
+                                        Tempo
+                                    </dt>
+
+                                    <dd class="col-sm-8">
+                                        {{ preparo.tempo_preparo_minutos }}
+                                        minutos
+                                    </dd>
+
+                                    {% endif %}
+
+
+                                    {% if preparo.materia_prima %}
+
+                                    <dt class="col-sm-4">
+                                        Matéria-prima
+                                    </dt>
+
+                                    <dd class="col-sm-8">
+                                        {{ preparo.materia_prima }}
+                                    </dd>
+
+                                    {% endif %}
+
+
+                                    {% if preparo.proporcao %}
+
+                                    <dt class="col-sm-4">
+                                        Proporção
+                                    </dt>
+
+                                    <dd class="col-sm-8">
+                                        {{ preparo.proporcao }}
+                                    </dd>
+
+                                    {% endif %}
+
+                                </dl>
+
+
+                                {% if preparo.descricao %}
+
+                                <p class="mt-2 mb-0">
+                                    {{ preparo.descricao }}
+                                </p>
+
+                                {% endif %}
+
+                            </div>
+
+                            {% endfor %}
+
+
+                            {% for posologia in formula.posologias %}
+
+                            <div class="dosage-box">
+
+                                <h4>
+                                    Posologia
+                                </h4>
+
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+
+                                        <span class="detail-label">
+                                            VIA DE ADMINISTRAÇÃO
+                                        </span>
+
+                                        <strong class="d-block">
+                                            {{ posologia.via_administracao }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    {% if posologia.dose %}
+
+                                    <div class="col-md-6">
+
+                                        <span class="detail-label">
+                                            DOSE
+                                        </span>
+
+                                        <strong class="d-block">
+                                            {{ posologia.dose }}
+                                        </strong>
+
+                                    </div>
+
+                                    {% endif %}
+
+
+                                    {% if posologia.frequencia %}
+
+                                    <div class="col-md-6">
+
+                                        <span class="detail-label">
+                                            FREQUÊNCIA
+                                        </span>
+
+                                        <strong class="d-block">
+                                            {{ posologia.frequencia }}
+                                        </strong>
+
+                                    </div>
+
+                                    {% endif %}
+
+
+                                    {% if posologia.intervalo %}
+
+                                    <div class="col-md-6">
+
+                                        <span class="detail-label">
+                                            INTERVALO
+                                        </span>
+
+                                        <strong class="d-block">
+                                            {{ posologia.intervalo }}
+                                        </strong>
+
+                                    </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                {% if posologia.observacoes %}
+
+                                <p class="mt-3 mb-0">
+                                    {{ posologia.observacoes }}
+                                </p>
+
+                                {% endif %}
+
+                            </div>
+
+                            {% endfor %}
+
+                        </article>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Tempo de utilização -->
+
+            {% if planta.tempos_utilizacao %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#tempo"
+                    >
+                        Tempo de utilização
+                    </button>
+
+                </h2>
+
+                <div
+                    id="tempo"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        {% for item in planta.tempos_utilizacao %}
+
+                        <div class="mb-3">
+
+                            {% if item.tempo_maximo %}
+
+                            <strong class="d-block">
+                                {{ item.tempo_maximo }}
+                            </strong>
+
+                            {% endif %}
+
+                            {% if item.orientacao %}
+
+                            <span>
+                                {{ item.orientacao }}
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Superdosagem -->
+
+            {% if planta.superdosagens %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#superdosagem"
+                    >
+                        Superdosagem
+                    </button>
+
+                </h2>
+
+                <div
+                    id="superdosagem"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        {% for item in planta.superdosagens %}
+
+                        <p>
+                            {{ item.descricao }}
+                        </p>
+
+                        {% if item.conduta %}
+
+                        <div class="alert alert-light border">
+
+                            <strong>Conduta:</strong>
+                            {{ item.conduta }}
+
+                        </div>
+
+                        {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Prescrição -->
+
+            {% if planta.prescricoes %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#prescricao"
+                    >
+                        Prescrição
+                    </button>
+
+                </h2>
+
+                <div
+                    id="prescricao"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        {% for item in planta.prescricoes %}
+
+                        {% if item.status %}
+
+                        <strong class="d-block mb-2">
+                            {{ item.status }}
+                        </strong>
+
+                        {% endif %}
+
+                        {% if item.observacoes %}
+
+                        <p class="mb-0">
+                            {{ item.observacoes }}
+                        </p>
+
+                        {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Armazenamento -->
+
+            {% if planta.armazenamentos %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#armazenamento"
+                    >
+                        Embalagem e armazenamento
+                    </button>
+
+                </h2>
+
+                <div
+                    id="armazenamento"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        {% for item in planta.armazenamentos %}
+
+                        {% if item.embalagem %}
+
+                        <p>
+                            <strong>Embalagem:</strong>
+                            {{ item.embalagem }}
+                        </p>
+
+                        {% endif %}
+
+
+                        {% if item.protecao %}
+
+                        <p>
+                            <strong>Proteção:</strong>
+                            {{ item.protecao }}
+                        </p>
+
+                        {% endif %}
+
+
+                        {% if item.armazenamento %}
+
+                        <p>
+                            <strong>Armazenamento:</strong>
+                            {{ item.armazenamento }}
+                        </p>
+
+                        {% endif %}
+
+
+                        {% if item.observacoes %}
+
+                        <p>
+                            <strong>Observações:</strong>
+                            {{ item.observacoes }}
+                        </p>
+
+                        {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Observações da fonte -->
+
+            {% if planta.observacoes_fonte %}
+
+            <div class="accordion-item">
+
+                <h2 class="accordion-header">
+
+                    <button
+                        class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#fonte"
+                    >
+                        Observações da fonte
+                    </button>
+
+                </h2>
+
+                <div
+                    id="fonte"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#dadosPlanta"
+                >
+
+                    <div class="accordion-body">
+
+                        {% for item in planta.observacoes_fonte %}
+
+                        <div class="source-note">
+
+                            <strong>
+                                {{ item.categoria or 'Observação' }}
+                            </strong>
+
+                            <p class="mb-0">
+                                {{ item.observacao }}
+                            </p>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- Aviso final -->
+
+    <section class="clinical-notice mt-5">
+
+        <strong>
+            Atenção
+        </strong>
+
+        <p class="mb-0 mt-1">
+            As informações apresentadas possuem caráter informativo.
+            O uso de medicamentos e preparações fitoterápicas deve
+            respeitar as orientações de profissionais habilitados e
+            as contraindicações e precauções aplicáveis.
+        </p>
+
+    </section>
+
+</div>
+
+<!-- Referências bibliográficas -->
+{% if planta.referencias %}
+
+<section class="mt-4">
+
+    <h3>Referências bibliográficas</h3>
+
+    <ul class="list-group">
+
+        {% for referencia in planta.referencias %}
+
+        <li class="list-group-item">
+
+            <p class="mb-1">
+                {{ referencia.referencia_formatada }}
+            </p>
+
+            <span class="badge bg-secondary">
+                {{ referencia.status_documento }}
+            </span>
+
+            {% if referencia.url %}
+            <div class="mt-2">
+                <a href="{{ referencia.url }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Consultar documento
+                </a>
+            </div>
+            {% endif %}
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+</section>
+
+{% endif %}
+
+{% endblock %}
+

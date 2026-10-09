@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Erro interno{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <h1 class="display-5">Erro interno</h1>
+    <p class="lead">Não foi possível concluir a solicitação. Verifique também se o MySQL está em execução e se o arquivo .env está configurado.</p>
+    <a class="btn btn-success" href="{{ url_for('plantas.index') }}">Voltar ao início</a>
+</div>
+{% endblock %}

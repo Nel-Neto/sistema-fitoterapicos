@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Interações medicamentosas | Fitoterápicos{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1 class="mb-3">Interações medicamentosas</h1>
+
+    <p class="text-secondary">
+        Consulte interações cadastradas entre plantas medicinais
+        e medicamentos.
+    </p>
+
+    <form action="{{ url_for('plantas.buscar_interacoes') }}"
+          method="get"
+          class="row g-2 mb-4">
+
+        <div class="col-md-9">
+            <input
+                type="search"
+                name="q"
+                class="form-control form-control-lg"
+                placeholder="Digite o nome da planta ou medicamento"
+                value="{{ termo }}"
+                required
+            >
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit"
+                    class="btn btn-success btn-lg w-100">
+                Pesquisar
+            </button>
+        </div>
+
+    </form>
+
+    {% if termo %}
+
+        <h2 class="h5 mb-3">
+            Resultados para "{{ termo }}"
+        </h2>
+
+        {% if resultados %}
+
+            {% for item in resultados %}
+
+            <div class="card mb-3 shadow-sm">
+
+                <div class="card-body">
+
+                    <h3 class="h5">
+                        {{ item.planta.nome_popular }}
+                    </h3>
+
+                    <p class="text-secondary fst-italic">
+                        {{ item.planta.nome_cientifico }}
+                    </p>
+
+                    <p>
+                        <strong>Medicamento:</strong>
+                        {{ item.medicamento or "Não especificado" }}
+                    </p>
+
+                    <p>
+                        <strong>Interação:</strong>
+                        {{ item.interacao }}
+                    </p>
+
+                    <a
+                        href="{{ url_for('plantas.detalhes_planta', planta_id=item.planta.id) }}"
+                        class="btn btn-outline-success btn-sm"
+                    >
+                        Ver monografia completa
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="alert alert-warning">
+                Nenhuma interação cadastrada foi encontrada para
+                "{{ termo }}". Isso não significa que a combinação
+                seja segura ou livre de interações.
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+    <div class="alert alert-light border mt-4">
+        As informações são destinadas à consulta e não substituem
+        a avaliação de um profissional de saúde.
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,272 @@
+
+{% extends "base.html" %}
+
+{% block title %}Consulta de Interações Medicamentosas | Fitoterápicos{% endblock %}
+
+{% block content %}
+
+<!-- Destaque principal: interações medicamentosas -->
+<section class="hero py-5">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-8">
+
+                <span class="badge rounded-pill text-bg-success mb-3">
+                    Consulta de segurança em fitoterapia
+                </span>
+
+                <h1 class="display-4 fw-bold mb-3">
+                    Consulte interações medicamentosas
+                    de plantas medicinais
+                </h1>
+
+                <p class="lead text-secondary mb-4">
+                    Pesquise pelo nome de uma planta medicinal ou
+                    medicamento e consulte as possíveis interações
+                    registradas em nossa base de dados.
+                </p>
+
+                <!-- Pesquisa principal -->
+                <div class="bg-white border rounded-4 p-3 shadow-sm">
+
+                    <form
+                        action="{{ url_for('plantas.buscar_interacoes') }}"
+                        method="get"
+                        class="row g-2"
+                    >
+
+                        <div class="col-md-9">
+                            <input
+                                class="form-control form-control-lg"
+                                type="search"
+                                name="q"
+                                placeholder="Nome da planta ou medicamento..."
+                                aria-label="Pesquisar interações medicamentosas"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-3">
+                            <button
+                                class="btn btn-success btn-lg w-100"
+                                type="submit"
+                            >
+                                Pesquisar
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <p class="small text-secondary mt-3 mb-0">
+                    Exemplos: Guaco, Unha-de-gato, varfarina,
+                    salgueiro...
+                </p>
+
+                <div class="mt-4">
+                    <a
+                        href="{{ url_for('plantas.buscar_interacoes') }}"
+                        class="btn btn-outline-success"
+                    >
+                        Acessar consulta de interações →
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Informações sobre a base -->
+            <div class="col-lg-4">
+
+                <div class="summary-card text-center p-4 shadow-sm">
+
+                    <div class="display-3 fw-bold text-success">
+                        {{ total }}
+                    </div>
+
+                    <div class="fs-5 fw-semibold">
+                        plantas medicinais cadastradas
+                    </div>
+
+                    <p class="text-secondary mt-3 mb-0">
+                        Base em expansão, com informações
+                        fitoterápicas e referências bibliográficas.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- Orientação sobre a pesquisa -->
+<section class="container pt-5">
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <div class="card h-100 border-0 bg-light rounded-4">
+                <div class="card-body p-4">
+
+                    <h2 class="h5 fw-bold">
+                        Pesquisa por planta medicinal
+                    </h2>
+
+                    <p class="text-secondary mb-0">
+                        Digite o nome popular ou científico da planta
+                        para consultar as interações medicamentosas
+                        cadastradas.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 border-0 bg-light rounded-4">
+                <div class="card-body p-4">
+
+                    <h2 class="h5 fw-bold">
+                        Pesquisa por medicamento
+                    </h2>
+
+                    <p class="text-secondary mb-0">
+                        Digite o nome do medicamento para identificar
+                        quais plantas da base possuem interações
+                        registradas com ele.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Monografias: consulta complementar -->
+<section class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+
+        <div>
+            <span class="text-success fw-semibold">
+                CONSULTA COMPLEMENTAR
+            </span>
+
+            <h2 class="display-6 fw-bold mb-0">
+                Monografias de plantas medicinais
+            </h2>
+
+            <p class="text-secondary mt-2 mb-0">
+                Consulte indicações, contraindicações, precauções,
+                preparações, posologias e referências.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('plantas.listar_plantas') }}"
+            class="btn btn-outline-success"
+        >
+            Ver todas
+        </a>
+
+    </div>
+
+    <div class="row g-4">
+
+        {% for planta in plantas %}
+
+        <div class="col-md-6 col-lg-4">
+
+            <a
+                class="card plant-card h-100 text-decoration-none"
+                href="{{ url_for(
+                    'plantas.detalhes_planta',
+                    planta_id=planta.id
+                ) }}"
+            >
+
+                <div class="card-body p-4">
+
+                    <div class="small text-success fw-semibold mb-2">
+                        MONOGRAFIA FITOTERÁPICA
+                    </div>
+
+                    <h3 class="h4 text-dark fw-bold mb-2">
+                        {{ planta.nome_popular }}
+                    </h3>
+
+                    <p class="fst-italic text-success mb-3">
+                        {{ planta.nome_cientifico }}
+                    </p>
+
+                    {% if planta.familia_botanica %}
+                    <p class="small text-secondary mb-3">
+                        <strong>Família:</strong>
+                        {{ planta.familia_botanica }}
+                    </p>
+                    {% endif %}
+
+                    {% if planta.indicacoes %}
+                    <p class="text-secondary mb-3">
+                        {{ planta.indicacoes[0].indicacao }}
+                    </p>
+                    {% elif planta.descricao %}
+                    <p class="text-secondary mb-3">
+                        {{ planta.descricao }}
+                    </p>
+                    {% endif %}
+
+                    <span class="text-success fw-semibold">
+                        Consultar monografia →
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {% else %}
+
+        <div class="col-12">
+            <div class="alert alert-light border">
+                Nenhuma planta medicinal foi encontrada.
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- Aviso de segurança -->
+<section class="container pb-5">
+
+    <div class="information-box p-4">
+
+        <h2 class="h5 fw-bold">
+            Informações importantes sobre interações medicamentosas
+        </h2>
+
+        <p class="text-secondary mb-0">
+            A ausência de interações cadastradas não significa
+            ausência de riscos. As informações disponibilizadas
+            possuem caráter informativo e não substituem a avaliação
+            de um profissional de saúde habilitado. Não interrompa
+            ou modifique tratamentos sem orientação profissional.
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Página não encontrada{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <h1 class="display-4">404</h1>
+    <p class="lead">A página ou o fitoterápico solicitado não foi encontrado.</p>
+    <a class="btn btn-success" href="{{ url_for('plantas.index') }}">Voltar ao início</a>
+</div>
+{% endblock %}
