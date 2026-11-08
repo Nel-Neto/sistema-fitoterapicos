@@ -1,40 +1,42 @@
+
 {% extends "base.html" %}
 
 {% block title %}Interações medicamentosas | Fitoterápicos{% endblock %}
 
 {% block content %}
-
 <div class="container py-5">
 
     <h1 class="mb-3">Interações medicamentosas</h1>
 
     <p class="text-secondary">
-        Consulte interações cadastradas entre plantas medicinais
-        e medicamentos.
+        Consulte os registros documentais de possíveis interações
+        entre plantas medicinais e medicamentos.
     </p>
 
     <form action="{{ url_for('plantas.buscar_interacoes') }}"
-          method="get"
-          class="row g-2 mb-4">
+          method="get" class="row g-2 mb-4">
 
         <div class="col-md-9">
+            <label for="busca-interacoes" class="form-label">
+                Nome da planta ou medicamento
+            </label>
             <input
+                id="busca-interacoes"
                 type="search"
                 name="q"
                 class="form-control form-control-lg"
-                placeholder="Digite o nome da planta ou medicamento"
-                value="{{ termo }}"
+                placeholder="Ex.: varfarina"
+                value="{{ termo | default('', true) }}"
                 required
             >
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3 d-flex align-items-end">
             <button type="submit"
                     class="btn btn-success btn-lg w-100">
                 Pesquisar
             </button>
         </div>
-
     </form>
 
     {% if termo %}
@@ -46,9 +48,7 @@
         {% if resultados %}
 
             {% for item in resultados %}
-
             <div class="card mb-3 shadow-sm">
-
                 <div class="card-body">
 
                     <h3 class="h5">
@@ -60,45 +60,43 @@
                     </p>
 
                     <p>
-                        <strong>Medicamento:</strong>
+                        <strong>Medicamento(s) citado(s) no registro:</strong>
                         {{ item.medicamento or "Não especificado" }}
                     </p>
 
                     <p>
-                        <strong>Interação:</strong>
+                        <strong>Descrição da interação:</strong>
                         {{ item.interacao }}
                     </p>
 
-                    <a
-                        href="{{ url_for('plantas.detalhes_planta', planta_id=item.planta.id) }}"
-                        class="btn btn-outline-success btn-sm"
-                    >
+                    <a href="{{ url_for('plantas.detalhes_planta', planta_id=item.planta.id) }}"
+                       class="btn btn-outline-success btn-sm">
                         Ver monografia completa
                     </a>
 
                 </div>
-
             </div>
-
             {% endfor %}
 
         {% else %}
-
-            <div class="alert alert-warning">
-                Nenhuma interação cadastrada foi encontrada para
-                "{{ termo }}". Isso não significa que a combinação
-                seja segura ou livre de interações.
+            <div class="alert alert-warning" role="alert">
+                Nenhum registro de interação foi encontrado para
+                "{{ termo }}". A ausência de resultados não significa
+                que a combinação seja segura ou livre de interações.
             </div>
-
         {% endif %}
 
     {% endif %}
 
-    <div class="alert alert-light border mt-4">
-        As informações são destinadas à consulta e não substituem
-        a avaliação de um profissional de saúde.
+    <div class="alert alert-light border mt-4" role="note">
+        <strong>Aviso importante:</strong>
+        As informações apresentadas possuem finalidade acadêmica
+        e informativa, baseadas nos registros documentais cadastrados.
+        A presença de uma interação não significa necessariamente
+        comprovação clínica, e a ausência de registros não garante
+        segurança. O sistema não foi validado para decisões clínicas
+        e não substitui a avaliação de um profissional de saúde.
     </div>
 
 </div>
-
 {% endblock %}

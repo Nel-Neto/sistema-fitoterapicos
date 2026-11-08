@@ -1,25 +1,95 @@
+
 {% extends "base.html" %}
-{% block title %}Plantas | Fitoterápicos{% endblock %}
+
+{% block title %}Plantas medicinais e fitoterápicos{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <h1 class="mb-1">Fitoterápicos</h1>
-    <p class="text-secondary mb-4">Lista em ordem alfabética pelo nome popular.</p>
+
+    <header class="mb-4">
+        <h1 class="mb-3">
+            Plantas medicinais e fitoterápicos
+        </h1>
+
+        <p class="text-secondary mb-2">
+            Consulte as monografias de plantas medicinais
+            organizadas a partir de documentos técnicos
+            e fontes bibliográficas de referência.
+        </p>
+
+        <p class="text-success fw-semibold">
+            {{ plantas | length }}
+            planta(s) cadastrada(s)
+        </p>
+
+        <p class="small text-secondary">
+            Listagem em ordem alfabética pelo nome popular.
+        </p>
+    </header>
+
+    {% if plantas %}
+
     <div class="row g-3">
+
         {% for planta in plantas %}
+
         <div class="col-md-6 col-lg-4">
-            <a href="{{ url_for('plantas.detalhes_planta', planta_id=planta.id) }}" class="card plant-card h-100 text-decoration-none">
-                <div class="card-body">
-                    <h2 class="h5 text-dark">{{ planta.nome_popular }}</h2>
-                    <div class="fst-italic text-success">{{ planta.nome_cientifico }}</div>
+
+            <a
+                href="{{ url_for('plantas.detalhes_planta', planta_id=planta.id) }}"
+                class="card plant-card h-100 text-decoration-none"
+                aria-label="Consultar monografia de {{ planta.nome_popular }}"
+            >
+
+                <div class="card-body d-flex flex-column">
+
+                    <h2 class="h5 text-dark mb-2">
+                        {{ planta.nome_popular }}
+                    </h2>
+
+                    <p class="fst-italic text-success mb-2">
+                        {{ planta.nome_cientifico }}
+                    </p>
+
                     {% if planta.familia_botanica %}
-                    <div class="small text-secondary mt-2">Família: {{ planta.familia_botanica }}</div>
+
+                    <p class="small text-secondary mb-3">
+                        <strong>Família botânica:</strong>
+                        {{ planta.familia_botanica }}
+                    </p>
+
                     {% endif %}
+
+                    <span class="text-success fw-semibold mt-auto pt-2">
+                        Consultar monografia
+                    </span>
+
                 </div>
+
             </a>
+
         </div>
-        {% else %}
-        <p>Nenhuma planta cadastrada.</p>
+
         {% endfor %}
+
     </div>
+
+    {% else %}
+
+    <div class="alert alert-light border" role="status">
+        Nenhuma planta medicinal está cadastrada
+        no banco de dados.
+    </div>
+
+    {% endif %}
+
+    <div class="alert alert-light border mt-4">
+        <strong>Nota:</strong>
+        Este sistema possui finalidade acadêmica e informativa.
+        As informações disponibilizadas não substituem
+        avaliação, diagnóstico ou orientação de
+        profissionais de saúde habilitados.
+    </div>
+
 </div>
 {% endblock %}

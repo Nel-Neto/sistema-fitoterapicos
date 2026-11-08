@@ -1,32 +1,92 @@
+
 {% extends "base.html" %}
-{% block title %}Busca | Fitoterápicos{% endblock %}
+
+{% block title %}Resultados da busca | Fitoterápicos{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <h1 class="h2">Resultados da busca</h1>
+
+    <h1 class="h2 mb-3">Resultados da busca</h1>
+
     {% if termo %}
-        <p class="text-secondary">Pesquisa por: <strong>{{ termo }}</strong></p>
+        <p class="text-secondary mb-4">
+            Resultados encontrados para:
+            <strong>{{ termo }}</strong>
+        </p>
     {% else %}
-        <p class="text-secondary">Digite um nome científico, nome popular, família ou indicação.</p>
+        <p class="text-secondary mb-4">
+            Pesquise pelo nome popular, nome científico,
+            família botânica ou indicação terapêutica.
+        </p>
     {% endif %}
 
-    <div class="row g-3 mt-2">
-        {% for planta in plantas %}
-        <div class="col-md-6 col-lg-4">
-            <a class="card plant-card h-100 text-decoration-none" href="{{ url_for('plantas.detalhes_planta', planta_id=planta.id) }}">
-                <div class="card-body">
-                    <h2 class="h5 text-dark">{{ planta.nome_popular }}</h2>
-                    <p class="fst-italic text-success mb-2">{{ planta.nome_cientifico }}</p>
-                    <p class="text-secondary mb-0">{{ planta.descricao or '' }}</p>
-                </div>
-            </a>
-        </div>
-        {% else %}
-            {% if termo %}
-            <div class="col-12">
-                <div class="alert alert-light border">Nenhum resultado encontrado para “{{ termo }}”.</div>
+    {% if plantas %}
+
+        <div class="row g-3">
+            {% for planta in plantas %}
+            <div class="col-md-6 col-lg-4">
+                <a
+                    class="card plant-card h-100 text-decoration-none"
+                    href="{{ url_for('plantas.detalhes_planta', planta_id=planta.id) }}"
+                >
+                    <div class="card-body">
+
+                        <h2 class="h5 text-dark">
+                            {{ planta.nome_popular }}
+                        </h2>
+
+                        <p class="fst-italic text-success mb-2">
+                            {{ planta.nome_cientifico }}
+                        </p>
+
+                        {% if planta.descricao %}
+                        <p class="text-secondary mb-0">
+                            {{ planta.descricao }}
+                        </p>
+                        {% endif %}
+
+                        <span class="d-inline-block mt-3 text-success fw-semibold">
+                            Consultar monografia
+                        </span>
+
+                    </div>
+                </a>
             </div>
-            {% endif %}
-        {% endfor %}
+            {% endfor %}
+        </div>
+
+    {% elif termo %}
+
+        <div class="alert alert-warning" role="alert">
+            <strong>Nenhum resultado encontrado para "{{ termo }}".</strong>
+            <p class="mb-0 mt-2">
+                Verifique a grafia ou tente pesquisar por outro
+                nome popular, nome científico ou indicação terapêutica.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('plantas.listar_plantas') }}"
+            class="btn btn-outline-success mt-2"
+        >
+            Ver todas as plantas cadastradas
+        </a>
+
+    {% else %}
+
+        <div class="alert alert-light border" role="status">
+            Utilize o campo de pesquisa no menu superior para
+            consultar as informações disponíveis.
+        </div>
+
+    {% endif %}
+
+    <div class="alert alert-light border mt-4">
+        <strong>Nota:</strong>
+        Este sistema possui finalidade acadêmica e informativa.
+        As informações disponibilizadas não substituem a
+        avaliação ou orientação de profissionais de saúde.
     </div>
+
 </div>
 {% endblock %}

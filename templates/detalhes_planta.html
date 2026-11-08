@@ -44,7 +44,7 @@
             <div class="col-lg-8">
 
                 <span class="badge rounded-pill text-bg-success mb-3">
-                    FITOTERÁPICO
+                    PLANTA MEDICINAL / FITOTERÁPICO
                 </span>
 
                 <h1 class="display-5 fw-bold mb-2">
@@ -117,8 +117,9 @@
         <div class="card-body p-4">
 
             <p class="text-secondary">
-                Consulte as possíveis interações medicamentosas
-                cadastradas para esta planta medicinal.
+                Consulte os registros documentais de possíveis interações
+                entre esta planta medicinal e medicamentos. A existência
+                de um registro não significa, necessariamente, comprovação clínica.
             </p>
 
             {% if planta.interacoes %}
@@ -128,7 +129,7 @@
                 <div class="border rounded-3 p-3 mb-3">
 
                     <div class="fw-semibold text-success mb-2">
-                        Medicamento:
+                        Medicamento(s) citado(s) no registro:
                         {{ item.medicamento or "Não especificado" }}
                     </div>
 
@@ -975,15 +976,15 @@
         </strong>
 
         <p class="mb-0 mt-1">
-            As informações apresentadas possuem caráter informativo.
-            O uso de medicamentos e preparações fitoterápicas deve
-            respeitar as orientações de profissionais habilitados e
-            as contraindicações e precauções aplicáveis.
+            Este sistema tem finalidade acadêmica e informativa e não foi
+            validado para orientar decisões clínicas. Os dados apresentados
+            refletem os registros documentais cadastrados; a ausência de
+            informações sobre riscos ou interações não garante segurança.
+            O uso de medicamentos e preparações fitoterápicas requer
+            avaliação e orientação de profissional de saúde habilitado.
         </p>
 
     </section>
-
-</div>
 
 <!-- Referências bibliográficas -->
 {% if planta.referencias %}
@@ -1025,6 +1026,8 @@
 </section>
 
 {% endif %}
+
+</div>
 
 {% endblock %}
 
